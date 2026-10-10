@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mine Sentinel - Sensor operations dashboard (live USB sensor unit + mine network)">
+  <title>Mine Sentinel · Operations</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/dashboard.css">
+</head>
+
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-mountain" viewBox="0 0 24 24"><path d="M3 20h18L14 6l-4 7-2-3z"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+      <symbol id="i-network" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/></symbol>
+      <symbol id="i-trend" viewBox="0 0 24 24"><path d="M4 20V10M9 20V14M14 20v-8M19 20V6M4 8l5-3 5 4 6-5"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 21h4"/></symbol>
+      <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+      <symbol id="i-terminal" viewBox="0 0 24 24"><path d="M5 7l5 5-5 5M12 18h7"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7zM14 3v4h4M9 13h6M9 17h6"/></symbol>
+      <symbol id="i-cog" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+      <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/></symbol>
+      <symbol id="i-unplug" viewBox="0 0 24 24"><path d="M14 4l-2.5 2.5M19 9l-2.5 2.5M9 9l6 6-2 2a4 4 0 0 1-6-6zM7 17l-3 3M15 5l4 4-2 2-4-4zM20 4l-1.5 1.5"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M4 20h16"/></symbol>
+      <symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/></symbol>
+      <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></symbol>
+      <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0M12 16l4-5"/></symbol>
+      <symbol id="i-waves" viewBox="0 0 24 24"><path d="M3 8c3-2 6 2 9 0s6-2 9 0M3 13c3-2 6 2 9 0s6-2 9 0M3 18c3-2 6 2 9 0s6-2 9 0"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6zM9 12l2 2 4-4"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="side-brand">
+        <span class="logo"><svg><use href="#i-mountain"/></svg></span>
+        <div><b>Mine Sentinel</b><small>SENSOR OPERATIONS</small></div>
+      </div>
+      <div class="side-select"><svg><use href="#i-mountain"/></svg><span>Mine network</span><em>16 nodes</em></div>
+
+      <nav class="side-nav" id="sideNav">
+        <span class="side-label">Monitoring</span>
+        <a href="#overview" class="on"><svg><use href="#i-grid"/></svg>Overview</a>
+        <a href="#network"><svg><use href="#i-network"/></svg>Sensor network</a>
+        <a href="#trends"><svg><use href="#i-trend"/></svg>Trends &amp; analysis</a>
+        <a href="#alarms"><svg><use href="#i-bell"/></svg>Alarms</a>
+        <a href="#events"><svg><use href="#i-list"/></svg>Event log</a>
+        <hr>
+        <span class="side-label">Workspace</span>
+        <button type="button" id="navCalibrate"><svg><use href="#i-sliders"/></svg>Calibration</button>
+        <a href="#console"><svg><use href="#i-terminal"/></svg>Serial console</a>
+        <button type="button" id="navReport"><svg><use href="#i-file"/></svg>Reports</button>
+        <button type="button" id="navSettings"><svg><use href="#i-cog"/></svg>Settings</button>
+      </nav>
+
+      <div class="usb-card" id="usbCard">
+        <div class="usb-title"><svg><use href="#i-unplug"/></svg><b id="usbTitle">USB disconnected</b></div>
+        <p id="usbText">Connect your sensor unit to resume sensor readings.</p>
+        <button id="btnConnect" type="button" class="primary" title="Connect the sensor board (Shift+click to list every serial port)">Connect USB</button>
+      </div>
+
+      <div class="side-foot">
+        <span>Local workspace</span>
+        <b>Mine Sentinel · v1.0</b>
+      </div>
+    </aside>
+
+    <div class="main">
+      <!-- TOP BAR -->
+      <header class="top">
+        <div class="crumbs">Mine network <span>›</span> <b>Overview</b></div>
+        <div class="top-actions">
+          <div id="srcState" class="src-state none"><i></i><span>NO BOARD</span></div>
+          <span class="clock">Session <b id="sessionClock">00:00</b> · <span id="utcClock">--:--:-- UTC</span></span>
+          <button id="btnCalibrate" type="button"><svg><use href="#i-sliders"/></svg>Calibration</button>
+          <button id="btnSettings" type="button"><svg><use href="#i-cog"/></svg>Settings</button>
+          <button id="btnCsv" type="button"><svg><use href="#i-download"/></svg>Export CSV</button>
+          <button id="btnReport" type="button"><svg><use href="#i-file"/></svg>Generate report</button>
+        </div>
+      </header>
+
+      <main class="page">
+        <div class="page-head" id="overview">
+          <div>
+            <h1>Operations overview</h1>
+            <p>A clear view of your underground sensor network.</p>
+          </div>
+          <div id="hdrCounts" class="counts"></div>
+        </div>
+
+        <div id="serialNotice" class="notice hidden"></div>
+        <div id="pausedBanner" class="paused hidden">
+          <svg><use href="#i-unplug"/></svg>
+          <div><b id="pausedTitle">Monitoring paused · USB is not connected</b><span id="pausedText">Gas and humidity come only from the sensor board. Plug in the sensor cable, then connect to start receiving data.</span></div>
+          <button id="btnConnectBanner" type="button" class="primary"><svg><use href="#i-plug"/></svg>Connect USB</button>
+        </div>
+        <button id="lossBanner" type="button" class="loss-banner hidden"><i></i><span id="lossBannerText">Sensor disconnected</span><b>View &amp; confirm area ›</b></button>
+        <div id="calibBanner" class="calib hidden">
+          <b id="calibTitle">Calibrating in clean air…</b> keep the gas sensor away from any gas source.
+          <div class="bar"><i id="calibBar"></i></div>
+          <span id="calibText">0 / 10 s</span>
+        </div>
+
+        <!-- PHYSICAL UNIT -->
+        <section class="unit" id="unitCard">
+          <div class="metric" id="m_gas">
+            <div class="m-head"><span>Carbon monoxide</span><i class="src">—</i><svg><use href="#i-wind"/></svg></div>
+            <div class="m-body"><div class="m-value"><b class="value">—</b><small>ppm</small></div><canvas></canvas></div>
+            <div class="sub">—</div>
+            <div class="thr" data-thr="gas"></div>
+          </div>
+          <div class="metric" id="m_hum">
+            <div class="m-head"><span>Relative humidity</span><i class="src">—</i><svg><use href="#i-drop"/></svg></div>
+            <div class="m-body"><div class="m-value"><b class="value">—</b><small>% RH</small></div><canvas></canvas></div>
+            <div class="sub">—</div>
+            <div class="thr" data-thr="hum"></div>
+          </div>
+          <div class="metric" id="m_pres">
+            <div class="m-head"><span>Air pressure</span><i class="src">—</i><svg class="blue"><use href="#i-gauge"/></svg></div>
+            <div class="m-body"><div class="m-value"><b class="value">—</b><small>hPa</small></div><canvas></canvas></div>
+            <div class="sub">—</div>
+            <div class="thr">Baseline-relative · simulated unless the board sends <code>pres</code></div>
+          </div>
+          <div class="metric" id="m_water">
+            <div class="m-head"><span>Water level</span><i class="src">—</i><svg class="blue"><use href="#i-waves"/></svg></div>
+            <div class="m-body"><div class="m-value"><b class="value">—</b><small>cm</small></div><canvas></canvas></div>
+            <div class="sub">—</div>
+            <div class="thr" data-thr="water"></div>
+          </div>
+        </section>
+
+        <!-- MAP + SELECTED -->
+        <div class="row map-row" id="network">
+          <section class="card map-card">
+            <div class="card-head">
+              <div><h2>Mine sensor network</h2><p>Underground layout · physical unit PU-01 at <span id="unitTitle">G-13 · Tunnel B</span></p></div>
+              <span class="tag">Schematic · N →</span>
+            </div>
+            <div class="map-wrap">
+              <canvas id="mapCanvas"></canvas>
+              <div id="mapTip" class="tip hidden"></div>
+            </div>
+            <div class="legend">
+              <span class="chip g"><i class="ring"></i>Physical unit</span>
+              <span class="chip g"><i class="dot"></i>Arch unit</span>
+              <span class="chip g"><i class="sq"></i>Floor unit</span>
+              <span class="chip o"><i class="sel"></i>Selected node</span>
+              <span class="chip a"><i class="sw gas"></i>Gas</span>
+              <span class="chip b"><i class="sw water"></i>Water</span>
+              <span class="dim">Not to scale · click a node to select it</span>
+            </div>
+          </section>
+
+          <section class="card sel-card">
+            <div class="card-head"><h2>Selected sensor</h2></div>
+            <div class="sel-top">
+              <div><b id="selId">G-13</b><small id="selZone">—</small></div>
+              <span id="selPill" class="pill">—</span>
+            </div>
+            <dl id="selRows" class="sel-rows"></dl>
+            <div class="sel-note"><b id="selNoteTitle">Current reading</b><span id="selNote">—</span></div>
+            <div class="sel-actions">
+              <a class="btn" href="#trends"><svg><use href="#i-trend"/></svg>View trends</a>
+              <button id="selCalibrate" type="button"><svg><use href="#i-sliders"/></svg>Calibrate</button>
+              <button id="selFollow" type="button" class="hidden">Follow PU-01</button>
+            </div>
+          </section>
+        </div>
+
+        <!-- SENSOR GRID -->
+        <section class="block">
+          <div class="block-head">
+            <div><h2>All nodes</h2><p><span id="nodeCount">16</span> registered sensors · select a node to inspect its readings</p></div>
+            <div class="tools">
+              <select id="nodeStatus" aria-label="Filter by status">
+                <option value="all">Status: All</option>
+                <option value="alarm">Alarming</option>
+                <option value="normal">Normal</option>
+                <option value="offline">No signal</option>
+              </select>
+              <label class="search"><svg><use href="#i-search"/></svg><input id="nodeSearch" type="search" placeholder="Search nodes"></label>
+            </div>
+          </div>
+          <div id="sensorGrid" class="sensor-grid"></div>
+        </section>
+
+        <!-- TRENDS -->
+        <section class="card trends-card" id="trends">
+          <div class="card-head">
+            <div><h2>Trends · <span id="trendNode">G-13</span></h2><p>All nodes faint, selected node bright · hover a chart to read a value</p></div>
+            <span class="tag blue">Last 5 minutes</span>
+          </div>
+          <div class="charts">
+            <div class="chart"><div class="chart-label">Carbon monoxide <small>ppm</small><b id="cv_gas"></b></div><canvas data-metric="gas"></canvas><div class="chart-foot"><span><i></i>Selected node</span><em data-thr-chart="gas"></em></div></div>
+            <div class="chart"><div class="chart-label">Humidity <small>% RH</small><b id="cv_hum"></b></div><canvas data-metric="hum"></canvas><div class="chart-foot"><span><i></i>Selected node</span><em data-thr-chart="hum"></em></div></div>
+            <div class="chart"><div class="chart-label">Air pressure <small>hPa</small><b id="cv_pres"></b></div><canvas data-metric="pres"></canvas><div class="chart-foot"><span><i></i>Selected node</span><em></em></div></div>
+            <div class="chart"><div class="chart-label">Water level <small>cm</small><b id="cv_water"></b></div><canvas data-metric="water"></canvas><div class="chart-foot"><span><i></i>Selected node</span><em data-thr-chart="water"></em></div></div>
+          </div>
+        </section>
+
+        <!-- ALARMS + ANALYSIS -->
+        <div class="row two">
+          <section class="card alarms-card" id="alarms">
+            <div class="card-head">
+              <div><h2>Alarms</h2><p>Threshold monitoring · <span id="alarmCount">0 this session</span></p></div>
+              <button id="btnAlarmSettings" type="button"><svg><use href="#i-sliders"/></svg>Alarm settings</button>
+            </div>
+            <canvas id="timeline"></canvas>
+            <div class="table-wrap">
+              <table class="inc-table">
+                <thead><tr><th>Metric</th><th>Node</th><th>Zone</th><th>Level</th><th>Start</th><th>Duration</th><th>Peak</th><th>Status</th></tr></thead>
+                <tbody id="alarmRows"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card analysis-card">
+            <div class="card-head">
+              <div><h2>Analysis</h2><p>Physical unit PU-01</p></div>
+              <span id="anPill" class="pill ok">Normal</span>
+            </div>
+            <div id="anHeadline" class="an-headline">Waiting for data</div>
+            <div id="anAdvice" class="an-advice">—</div>
+            <div class="kpis">
+              <div class="kpi" id="kpiUnit"><span>Physical unit</span><b>—</b><small>—</small></div>
+              <div class="kpi" id="kpiAlarms"><span>Active alarms</span><b>0</b><small>none active</small></div>
+              <div class="kpi" id="kpiNodes"><span>Nodes alarming</span><b>0/16</b><small>—</small></div>
+              <div class="kpi" id="kpiPeakGas"><span>Peak CO</span><b>—</b><small>session max</small></div>
+              <div class="kpi" id="kpiPeakHum"><span>Peak humidity</span><b>—</b><small>session max</small></div>
+              <div class="kpi" id="kpiLink"><span>Data link</span><b>—</b><small>—</small></div>
+            </div>
+            <div class="conf"><span>% of CO alarm level</span><div class="bar"><i id="anLel"></i></div></div>
+            <ul id="anLines" class="trace"></ul>
+            <div class="cal-row">
+              <div><b>Physical-unit calibration</b><span id="unitMeta">—</span></div>
+              <span id="calPill" class="pill">—</span>
+            </div>
+          </section>
+        </div>
+
+        <!-- CONSOLE + EVENTS -->
+        <div class="row console-row">
+          <section class="card console-card" id="console">
+            <div class="card-head">
+              <div><h2>Serial console</h2><p id="consoleSub">USB gateway</p></div>
+              <div class="btn-group">
+                <button id="btnPauseConsole" type="button">Pause</button>
+                <button id="btnClearConsole" type="button">Clear</button>
+              </div>
+            </div>
+            <ol id="consoleLines" class="console"></ol>
+            <div class="console-hint">Expected: one line per reading, e.g. <code>{"gas":412,"hum":55.2,"temp":27.1}</code> or <code>gas=412,hum=55.2</code>. Optional keys <code>pres</code> and <code>water</code> switch those readings to live.</div>
+          </section>
+
+          <section class="card events-card" id="events">
+            <div class="card-head">
+              <div><h2>Event log</h2><p>Current session</p></div>
+              <button id="btnExportLog" type="button"><svg><use href="#i-download"/></svg>Export log</button>
+            </div>
+            <div id="eventFilters" class="seg">
+              <button type="button" data-f="all" class="on">All</button>
+              <button type="button" data-f="crit">Critical</button>
+              <button type="button" data-f="warn">Warnings</button>
+              <button type="button" data-f="link">Link</button>
+            </div>
+            <ol id="eventList" class="events"></ol>
+          </section>
+        </div>
+
+        <footer class="foot">
+          <span>Mine Sentinel · Sensor operations workspace</span>
+          <span id="footState"><i></i>—</span>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <dialog id="settingsDlg">
+    <form method="dialog" id="settingsForm">
+      <h2>Settings</h2>
+      <fieldset>
+        <legend>Hardware link</legend>
+        <label>Baud rate<select name="baud"><option>9600</option><option>57600</option><option>115200</option></select></label>
+        <label>Board ADC<select name="adcMax"><option value="4095">12-bit · ESP32 (0–4095, 3.3 V)</option><option value="1023">10-bit · Arduino Uno / Nano (0–1023, 5 V)</option></select></label>
+        <label>Gas module supply (V)<select name="sensorVcc"><option value="5">5 V (VIN / 5V pin)</option><option value="3.3">3.3 V (3V3 pin)</option></select></label>
+        <label>Gas sensor<select name="sensorModel"></select></label>
+        <label>Physical unit location<select name="physicalNode"></select></label>
+      </fieldset>
+      <fieldset>
+        <legend>Alarm thresholds</legend>
+        <label>CO warning (ppm)<input name="gasWarn" type="number" min="1" step="1"></label>
+        <label>CO alarm (ppm)<input name="gasAlarm" type="number" min="1" step="1"></label>
+        <label>Humidity warning (%RH)<input name="humWarn" type="number" min="1" max="100"></label>
+        <label>Humidity alarm (%RH)<input name="humAlarm" type="number" min="1" max="100"></label>
+        <label>Water warning (cm)<input name="waterWarn" type="number" min="1"></label>
+        <label>Water alarm (cm)<input name="waterAlarm" type="number" min="1"></label>
+      </fieldset>
+      <fieldset>
+        <legend>Gas calibration</legend>
+        <p id="calStatus" class="dim">—</p>
+        <button type="button" id="btnResetCal">Reset to uncalibrated estimate</button>
+      </fieldset>
+      <div class="dlg-actions">
+        <button value="cancel" formnovalidate>Cancel</button>
+        <button value="save" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- SENSOR SIGNAL LOSS -->
+  <dialog id="lossDlg" class="loss">
+    <div class="loss-head">
+      <div class="loss-icon">!</div>
+      <div>
+        <h2 id="lossTitle">Sensor disconnected</h2>
+        <p id="lossSub">—</p>
+      </div>
+    </div>
+    <div class="loss-body">
+      <div class="loss-left">
+        <canvas id="lossMap"></canvas>
+        <div id="lossLocation" class="loss-grid"></div>
+      </div>
+      <div class="loss-right">
+        <div id="lossRisk" class="loss-risk">—</div>
+        <h3>Last readings before contact was lost</h3>
+        <div id="lossLast" class="loss-grid four"></div>
+        <h3>Neighbouring sensors on the same cable</h3>
+        <ul id="lossNeighbours" class="loss-neighbours"></ul>
+        <h3>Response</h3>
+        <ol class="loss-steps">
+          <li>Call the section supervisor and anyone working in this area by radio.</li>
+          <li>Send an inspection team with gas detectors and self-rescuers.</li>
+          <li>Record the outcome below.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="loss-actions">
+      <button id="lossDispatch" type="button" class="warn">Dispatch inspection team</button>
+      <button id="lossClear" type="button" class="ok">Area checked · no casualties</button>
+      <span class="loss-cas"><input id="lossCount" type="number" min="1" value="1" aria-label="Number of casualties"><button id="lossCasualty" type="button" class="crit">Report casualties</button></span>
+      <button id="lossAck" type="button">Acknowledge</button>
+    </div>
+  </dialog>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <section id="report" class="report"></section>
+
+  <script type="module" src="../src/dashboard/main.js"></script>
+  <script>
+    // Browsers refuse ES modules from file://, which leaves the page drawn but every button dead.
+    // A classic script still runs there, so it explains how to open the dashboard instead.
+    window.addEventListener('load', () => setTimeout(() => {
+      if (window.__dashboardReady) return;
+      const box = document.getElementById('serialNotice');
+      box.classList.remove('hidden');
+      box.innerHTML = location.protocol === 'file:'
+        ? '<b>The dashboard can\'t run from a double-clicked file.</b> Browsers block its scripts on file:// addresses, so no button works. In VS Code right-click <code>public/dashboard.html</code> → <b>Open with Live Server</b>, or run <code>python tools/serve.py 8000</code> and open <code>http://localhost:8000/public/dashboard.html</code>.'
+        : '<b>The dashboard scripts failed to load.</b> Press F12 → Console to see why, then reload with Ctrl+Shift+R.';
+    }, 1500));
+  </script>
+</body>
+
+</html>

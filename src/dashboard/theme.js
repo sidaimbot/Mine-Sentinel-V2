@@ -1,0 +1,37 @@
+// Canvas palette for the dashboard; keep in sync with the variables in styles/dashboard.css.
+export const THEME = {
+  text: '#1d2733',
+  soft: '#475261',
+  muted: '#6b7685',
+  dim: '#9aa3ae',
+  accent: '#f26a21',
+  accentTint: 'rgba(242, 106, 33, 0.14)',
+  font: 'Inter, "Segoe UI", system-ui, sans-serif',
+  canvasBg: '#f4f6f8',
+  grid: 'rgba(29, 39, 51, 0.045)',
+  tunnel: 'rgba(118, 134, 152, 0.2)',
+  wall: 'rgba(110, 124, 140, 0.55)',
+  zoneLabel: 'rgba(71, 82, 97, 0.6)',
+  nodeFill: '#ffffff',
+  otherLine: 'rgba(71, 82, 97, 0.13)',
+  hoverLine: 'rgba(29, 39, 51, 0.3)',
+  nowLine: 'rgba(29, 39, 51, 0.4)',
+  level: { normal: '#1a9e5c', elevated: '#d98a00', critical: '#dc3b2f' },
+  trend: { normal: '#2563eb', elevated: '#d98a00', critical: '#dc3b2f' },
+  type: { methane: '#d98a00', water: '#1f8fc4', fire: '#e25a12' },
+  hazard: {
+    gasWarn: [217, 138, 0],
+    gasAlarm: [220, 59, 47],
+    fire: [226, 90, 18],
+    water: [31, 143, 196],
+  },
+  submerged: '#1f8fc4',
+  safe: '#1a9e5c',
+  route: '#d98a00',
+  player: '#b8860b',
+  playerDanger: '#dc3b2f',
+  alertLine: 'rgba(242, 106, 33, 0.55)',
+  critLine: 'rgba(220, 59, 47, 0.6)',
+};
+
+export default THEME;
